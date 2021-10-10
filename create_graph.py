@@ -135,7 +135,7 @@ if __name__ == "__main__":
         "similarity_connectedcomps": "20210719_cmdb_similarities_sentencebert_08_threshold_conntected_components.csv",
     }
     # Path to clean data CSVs
-    data_path = "data_clean"
+    data_path = "graph_data_clean"
     filenames = {key: os.path.join(data_path, val) for key, val in filenames.items()}
     # Start connection and run build queries
     connection = Neo4jConnection(

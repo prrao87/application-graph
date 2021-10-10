@@ -103,8 +103,8 @@ def clean_similarity_connectedcomps_file(
 
 
 if __name__ == "__main__":
-    rawfile_path = "data"
-    outpath = "data_clean"
+    rawfile_path = "graph_data"
+    outpath = "graph_data_clean"
     files = get_files(rawfile_path)
     os.makedirs(outpath, exist_ok=True)
     # Clean main business app file with application persistent IDs
