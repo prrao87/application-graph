@@ -44,7 +44,7 @@ The following schema exists for the graph:
 * `Org`
 * `AHD`
 
-### Relationship types:
+#### Relationship types:
 * `(:App) -[:USED_BY]-> (:Org)`
 * `(:App) -[:IS_SIMILAR_TO]-> (:App)`
 * `(:App) -[:HITS]-> (:AHD)`
