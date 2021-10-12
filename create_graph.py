@@ -36,6 +36,7 @@ class Neo4jConnection:
                 self._create_similarity_connectedcomps_rels,
                 self.filenames["similarity_connectedcomps"],
             )
+            # session.write_transaction(self._create_os_nodes, self.filenames["os"])
 
     @staticmethod
     def _create_indexes(tx: Transaction) -> None:
@@ -44,6 +45,7 @@ class Neo4jConnection:
             "CREATE INDEX app_id IF NOT EXISTS FOR (app:App) ON (app.PERSID) ",
             "CREATE INDEX org_id IF NOT EXISTS FOR (org:Org) ON (org.APP_PERSID) ",
             "CREATE INDEX ahd_id IF NOT EXISTS FOR (ahd:AHD) ON (ahd.APP_PERSID) ",
+            "CREATE INDEX app_id IF NOT EXISTS FOR (os:OS) ON (os.OS_PERSID) ",
         ]
         for query in index_queries:
             tx.run(query)
@@ -60,6 +62,22 @@ class Neo4jConnection:
                 UNWIND $data as fields
                 MERGE (app:App {PERSID: fields.PERSID})
                   SET app += fields
+                """,
+                data=data,
+            )
+
+    @staticmethod
+    def _create_os_nodes(tx: Transaction, filename: str) -> None:
+        os_nodes = read_with_nulls(filename)
+        fields = list(os_nodes.columns)
+        print(f"Adding OS instance nodes from `{filename}`")
+        for item in tqdm(os_nodes.itertuples(index=False), total=len(os_nodes)):
+            data = dict(zip(fields, item))
+            tx.run(
+                """
+                UNWIND $data as fields
+                MERGE (os:OS {PERSID: fields.OS_PERSID})
+                  SET os += fields
                 """,
                 data=data,
             )
@@ -132,10 +150,11 @@ if __name__ == "__main__":
         "apps": "20210330_cmdb_ci_business_app_V2_noDescription.csv",
         "orgs": "20210401-AccessIT-APPLICATIONS-ORGANIZATIONS-reduced_CMDB_exact_matches.csv",
         "ahds": "20210517-CMDB-AHD-hits.csv",
+        "os": "20210701_OS_InstanceMonthyCashOut.csv",
         "similarity_connectedcomps": "20210719_cmdb_similarities_sentencebert_08_threshold_conntected_components.csv",
     }
     # Path to clean data CSVs
-    data_path = "graph_data_clean"
+    data_path = "graph_data_small"
     filenames = {key: os.path.join(data_path, val) for key, val in filenames.items()}
     # Start connection and run build queries
     connection = Neo4jConnection(
