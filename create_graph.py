@@ -45,7 +45,7 @@ class Neo4jConnection:
             "CREATE INDEX app_id IF NOT EXISTS FOR (app:App) ON (app.PERSID) ",
             "CREATE INDEX org_id IF NOT EXISTS FOR (org:Org) ON (org.APP_PERSID) ",
             "CREATE INDEX ahd_id IF NOT EXISTS FOR (ahd:AHD) ON (ahd.APP_PERSID) ",
-            "CREATE INDEX app_id IF NOT EXISTS FOR (os:OS) ON (os.OS_PERSID) ",
+            # "CREATE INDEX app_id IF NOT EXISTS FOR (os:OS) ON (os.OS_PERSID) ",
         ]
         for query in index_queries:
             tx.run(query)
@@ -154,7 +154,7 @@ if __name__ == "__main__":
         "similarity_connectedcomps": "20210719_cmdb_similarities_sentencebert_08_threshold_conntected_components.csv",
     }
     # Path to clean data CSVs
-    data_path = "graph_data_small"
+    data_path = "graph_data_clean"
     filenames = {key: os.path.join(data_path, val) for key, val in filenames.items()}
     # Start connection and run build queries
     connection = Neo4jConnection(
